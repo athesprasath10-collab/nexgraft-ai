@@ -175,6 +175,10 @@ async def _resolve_model(agent_id: str, options: dict[str, Any]) -> str:
     per_agent = (options.get("agent_models") or {}).get(agent_id) or settings.agent_model_override(agent_id)
     if per_agent:
         return await ollama.resolve_chat_model(per_agent)
+    if settings.use_finetuned:
+        tuned = await ollama.finetuned_model(agent_id)
+        if tuned:
+            return tuned
     return await ollama.resolve_chat_model(options.get("model") or settings.model or None)
 
 

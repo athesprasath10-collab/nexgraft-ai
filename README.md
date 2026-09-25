@@ -63,8 +63,13 @@ python run.py
 | `qwen2.5-coder:3b` | ~1.9 GB | Optional model for the Bioinformatics workspace (Settings → per-workspace models) |
 | `nomic-embed-text` | 274 MB | Enables hybrid (semantic + keyword) retrieval |
 | `qwen2.5vl:3b` / `moondream` | 3.2 / 1.7 GB | Enables image input; swapped in only when you attach an image |
+| `nexgraft-bioinformatics` / `nexgraft-hardware` | ~2.2 GB each | Optional fine-tunes you build on your own GPU (below); used automatically by their workspace |
 
 The **System & capabilities** page shows which models are loaded and how much of each one runs on the GPU.
+
+### Fine-tuned workspace models (optional)
+
+`finetune.bat` (or `./finetune.sh`) lightly fine-tunes Qwen2.5-3B on your own NVIDIA GPU, 4 GB is enough, for two workspaces: Bioinformatics AI (bioinformatics and biology Stack Exchange answers) and Hardware Design AI (electronics and engineering Stack Exchange answers). It uses QLoRA, merges the LoRA weights into the Qwen base, installs `nexgraft-bioinformatics` and `nexgraft-hardware` in Ollama, and writes a before/after evaluation report. The two workspaces then use these models automatically. Details: [docs/FINETUNING.md](docs/FINETUNING.md).
 
 ## How it works
 
@@ -99,6 +104,7 @@ Everything below is in the code and demonstrable today:
 - ✅ LangGraph orchestration: analysis graph and execution graph, with the live structure shown on the System page
 - ✅ Intelligent routing, task decomposition, dynamic task graph and multi-agent synthesis
 - ✅ Local LLMs via Ollama (Qwen), with optional per-workspace models
+- ✅ Optional local fine-tuning for Bioinformatics and Hardware Design: QLoRA on a 4 GB GPU, merged into the Qwen weights, exported to Ollama, and evaluated against the untouched base
 - ✅ Knowledge layer: hybrid RAG (BM25 + local NumPy vector index with Ollama embeddings) over extensible domain collections
 - ✅ Bioinformatics tools (sequence stats, translation, ORFs, Biopython alignment) and a user-triggered local code runner that displays plots
 - ✅ Medical literature search (Europe PMC) with citations; research-only boundary
@@ -106,7 +112,7 @@ Everything below is in the code and demonstrable today:
 - ✅ Input: text, voice (browser speech recognition in Chrome/Edge), documents (PDF, DOCX, TXT/MD, CSV, FASTA…), images (with a local vision model)
 - ✅ English + 10 Indian languages (script detection, language-matched answers, read-aloud)
 
-Not implemented yet (roadmap): offline speech recognition (e.g. Whisper), parallel agents on bigger GPUs, more workspaces and plugins, deeper tool integrations (BLAST/UniProt/PDB APIs), agentic tool-calling loops, a dedicated vector database, accounts and collaboration. **There is no proprietary NEXGRAFT model**; the prototype uses open models through Ollama.
+Not implemented yet (roadmap): offline speech recognition (e.g. Whisper), parallel agents on bigger GPUs, more workspaces and plugins, deeper tool integrations (BLAST/UniProt/PDB APIs), agentic tool-calling loops, a dedicated vector database, accounts and collaboration. **There is no proprietary NEXGRAFT foundation model**: the prototype uses open Qwen models through Ollama, optionally with the local fine-tunes above.
 
 ## What leaves your computer
 
@@ -135,7 +141,8 @@ backend/nexgraft/
 backend/tests/            pytest suite (no model needed)
 knowledge/<collection>/   Seed knowledge documents per domain; add your own
 frontend/src/             React + TypeScript interface (views, components, design tokens)
-docs/                     Architecture, Spline guide, demo script
+finetune/                 Local fine-tuning pipeline: prepare, train (QLoRA), merge, GGUF export, evaluate
+docs/                     Architecture, design system, fine-tuning, Spline guide, demo script
 ```
 
 ## Extending NEXGRAFT
@@ -151,6 +158,7 @@ docs/                     Architecture, Spline guide, demo script
 python run.py --reload            # backend on :8000 with auto-reload
 cd frontend && npm run dev        # Vite dev server on :5173 (proxies /api to :8000)
 cd backend && python -m pytest    # backend tests (install requirements-dev.txt)
+python -m pytest finetune/tests    # fine-tuning data pipeline tests
 cd frontend && npm run typecheck
 ```
 
@@ -162,4 +170,4 @@ cd frontend && npm run typecheck
 - **Indian-language quality**: small models are weaker in Tamil/Telugu/etc. Larger Qwen models improve it noticeably.
 - **Image upload says "no vision model"**: `ollama pull qwen2.5vl:3b` (or `moondream`), then retry.
 
-See also: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) (tokens, Figma file, UI pieces) · [docs/SPLINE.md](docs/SPLINE.md) (custom 3D scene) · [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (incubation demo walkthrough).
+See also: [docs/FINETUNING.md](docs/FINETUNING.md) (fine-tuned workspace models) · [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) (tokens, Figma file, UI pieces) · [docs/SPLINE.md](docs/SPLINE.md) (custom 3D scene) · [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (incubation demo walkthrough).

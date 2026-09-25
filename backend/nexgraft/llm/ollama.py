@@ -227,9 +227,22 @@ class OllamaClient:
                 s += 10
             if "coder" in n or m.is_vision or "vl" in n.split(":")[0]:
                 s -= 5
+            if n.startswith("nexgraft-"):  # fine-tuned for one workspace, not a general default
+                s -= 8
             return (s, -m.size)
 
         return sorted(chat_models, key=score, reverse=True)[0].name
+
+    async def finetuned_model(self, agent_id: str) -> str | None:
+        """The workspace's fine-tuned model (nexgraft-<id>, see docs/FINETUNING.md), if installed."""
+        try:
+            models = await self.list_models()
+        except OllamaError:
+            return None
+        for m in models:
+            if m.name in (f"nexgraft-{agent_id}", f"nexgraft-{agent_id}:latest"):
+                return m.name
+        return None
 
     async def model_info(self, name: str) -> ModelInfo:
         for m in await self.list_models():

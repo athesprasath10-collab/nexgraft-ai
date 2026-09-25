@@ -108,6 +108,9 @@ class Settings:
     knowledge_dir: Path = field(default_factory=lambda: Path(_env("NEXGRAFT_KNOWLEDGE_DIR", str(ROOT_DIR / "knowledge"))))
     data_dir: Path = field(default_factory=lambda: Path(_env("NEXGRAFT_DATA_DIR", str(ROOT_DIR / "data"))))
 
+    # Use an installed nexgraft-<workspace> model (built with `python -m finetune`) for its workspace.
+    use_finetuned: bool = field(default_factory=lambda: _env_bool("NEXGRAFT_FINETUNED", True))
+
     def agent_model_override(self, agent_id: str) -> str:
         """Optional per-workspace model, e.g. NEXGRAFT_MODEL_BIOINFORMATICS=qwen2.5-coder:3b."""
         return _env(f"NEXGRAFT_MODEL_{agent_id.upper()}")

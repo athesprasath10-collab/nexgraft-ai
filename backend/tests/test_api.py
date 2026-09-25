@@ -105,6 +105,34 @@ def test_image_without_vision_model(fake_ollama):
     assert "vision model" in r.json()["detail"]
 
 
+def _generating_model(agent, options=None):
+    with TestClient(app) as client:
+        r = client.post("/api/run", json={"message": "reverse complement of ATGC", "agent": agent, "options": options or {}})
+    return next(e["model"] for e in events(r) if e["type"] == "task_phase" and e["phase"] == "generating")
+
+
+def test_workspace_uses_its_finetuned_model(fake_ollama, monkeypatch):
+    from nexgraft.config import settings
+    from nexgraft.llm.ollama import ModelInfo, ollama
+
+    async def list_models(refresh=False):
+        return [ModelInfo(name="qwen2.5:3b", capabilities=["completion"]), ModelInfo(name="nexgraft-bioinformatics:latest", capabilities=["completion"])]
+
+    monkeypatch.setattr(ollama, "list_models", list_models)
+    assert _generating_model("bioinformatics") == "nexgraft-bioinformatics:latest"
+    assert _generating_model("general") == "qwen2.5:3b"
+    assert _generating_model("bioinformatics", {"agent_models": {"bioinformatics": "qwen2.5:3b"}}) == "qwen2.5:3b"
+    monkeypatch.setattr(settings, "use_finetuned", False)
+    assert _generating_model("bioinformatics") == "qwen2.5:3b"
+
+
+def test_finetuned_models_are_not_the_general_default():
+    from nexgraft.llm.ollama import ModelInfo, OllamaClient
+
+    models = [ModelInfo(name="nexgraft-hardware:latest", size=1), ModelInfo(name="llama3.2:3b", size=2)]
+    assert OllamaClient.pick_default(models) == "llama3.2:3b"
+
+
 def test_analyzer_timeout_falls_back_to_keyword_router(fake_ollama, monkeypatch):
     from nexgraft.llm.ollama import OllamaError, ollama
 

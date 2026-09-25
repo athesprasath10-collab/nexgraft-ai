@@ -151,6 +151,8 @@ export interface SystemStatus {
   embed_model: { name: string; installed: boolean };
   knowledge: KnowledgeStats;
   model_error?: string;
+  /** Workspace id -> installed fine-tuned model (nexgraft-<id>), used unless a per-workspace model is chosen. */
+  finetuned_models?: Record<string, string>;
   settings: { num_ctx: number; num_predict: number; router: string; keep_alive: string; agent_models: Record<string, string> };
 }
 

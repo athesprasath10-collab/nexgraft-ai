@@ -1,0 +1,11 @@
+# Fine-tuning toolchain, kept out of the app's environment (see docs/FINETUNING.md).
+# finetune.bat / finetune.sh first install PyTorch with CUDA from https://download.pytorch.org/whl/cu126
+transformers>=4.56
+peft>=0.17
+accelerate>=1.0
+bitsandbytes>=0.45
+huggingface_hub>=0.34
+safetensors>=0.4
+pyarrow>=15
+numpy>=1.26
+gguf>=0.17

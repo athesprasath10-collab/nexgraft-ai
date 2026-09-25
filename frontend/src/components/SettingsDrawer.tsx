@@ -59,13 +59,16 @@ export function SettingsDrawer() {
             <details className="field-group">
               <summary>Per-workspace models (optional)</summary>
               <p className="faint small">
-                e.g. a coder model for Bioinformatics. On a 4 GB GPU, switching models costs a few seconds of loading each time.
+                e.g. a coder model for Bioinformatics. Fine-tuned nexgraft-* models are used for their workspace automatically. On a 4 GB GPU,
+                switching models costs a few seconds of loading each time.
               </p>
               {config?.agents.map((a) => (
                 <label key={a.id} className="field inline">
                   <span>{a.short_name}</span>
                   <select value={settings.agentModels[a.id] || ""} onChange={(e) => set("agentModels", { ...settings.agentModels, [a.id]: e.target.value })}>
-                    <option value="">Same as default</option>
+                    <option value="">
+                      {status?.finetuned_models?.[a.id] ? `Fine-tuned (${status.finetuned_models[a.id].replace(/:latest$/, "")})` : "Same as default"}
+                    </option>
                     {chatModels.map((m) => (
                       <option key={m.name} value={m.name}>
                         {m.name}

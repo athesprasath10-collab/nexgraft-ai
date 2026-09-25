@@ -244,6 +244,9 @@ async def status() -> dict[str, Any]:
     except OllamaError as exc:
         out["model_error"] = str(exc)
     out["running"] = await ollama.running()
+    if settings.use_finetuned:
+        tuned = {a: await ollama.finetuned_model(a) for a in registry.agents}
+        out["finetuned_models"] = {a: m for a, m in tuned.items() if m}
     out["vision_model"] = await ollama.resolve_vision_model()
     out["embed_model"]["installed"] = await ollama.has_model(settings.embed_model)
     return out

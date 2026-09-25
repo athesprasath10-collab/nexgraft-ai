@@ -12,6 +12,7 @@ const IMPLEMENTED: [string, string][] = [
   ["LangGraph orchestration", "Input understanding → LLM problem & intent analysis (JSON schema) → task decomposition → routing, with a keyword router fallback and guard."],
   ["Dynamic task graph", "Only the needed workspaces run; multi-part problems execute as a task graph with a unified synthesis. Tasks run sequentially on one local GPU."],
   ["Local LLMs via Ollama", "Qwen-family models on your GPU; optional per-workspace model."],
+  ["Local fine-tuning", "Optional QLoRA fine-tunes of Qwen for Bioinformatics and Hardware Design on a 4 GB GPU, merged into the base weights and served by Ollama."],
   ["Knowledge layer (RAG)", "Hybrid retrieval: BM25 + a local NumPy vector index built with an Ollama embedding model, over domain collections you can extend."],
   ["Bioinformatics tools", "Sequence statistics, translation, ORF finder and Biopython alignment; generated scripts run locally only when you press Run."],
   ["Medical literature search", "Europe PMC (PubMed/MEDLINE, PMC) abstracts with numbered citations. Research only — no diagnosis."],
@@ -176,6 +177,13 @@ export function SystemView() {
                     <td className="mono">{m.name}</td>
                     <td>{formatBytes(m.size)}</td>
                     <td>
+                      {Object.entries(status?.finetuned_models || {})
+                        .filter(([, name]) => name === m.name)
+                        .map(([agent]) => (
+                          <span key={agent} className="tag">
+                            fine-tuned · {config?.agents.find((a) => a.id === agent)?.short_name || agent}
+                          </span>
+                        ))}
                       {m.capabilities.map((c) => (
                         <span key={c} className="tag">
                           {c}
@@ -205,6 +213,10 @@ export function SystemView() {
               <li>
                 Optional: <b>qwen2.5-coder:3b</b> as the Bioinformatics model, <b>nomic-embed-text</b> for semantic RAG, <b>qwen2.5vl:3b</b> or <b>moondream</b>{" "}
                 for images (loaded on demand).
+              </li>
+              <li>
+                Fine-tuned <b>nexgraft-bioinformatics</b> and <b>nexgraft-hardware</b> (~2.2 GB each) can be built on this GPU with <b>finetune.bat</b>; their
+                workspaces then use them automatically.
               </li>
               <li>Agents run one after another so they never fight over VRAM. Turn off the 3D hero to give the GPU fully to the model.</li>
             </ul>
