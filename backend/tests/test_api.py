@@ -102,3 +102,18 @@ def test_image_without_vision_model(fake_ollama):
         r = client.post("/api/attachments", files={"file": ("photo.png", b"\x89PNG....", "image/png")})
     assert r.status_code == 422
     assert "vision model" in r.json()["detail"]
+
+
+def test_analyzer_timeout_falls_back_to_keyword_router(fake_ollama, monkeypatch):
+    from nexgraft.llm.ollama import OllamaError, ollama
+
+    async def slow_json(*args, **kwargs):
+        raise OllamaError("the model took longer than 60 s")
+
+    monkeypatch.setattr(ollama, "chat_json", slow_json)
+    with TestClient(app) as client:
+        r = client.post("/api/analyze", json={"message": "Explain recent research on diabetes biomarkers."})
+    analysis = next(e["analysis"] for e in events(r) if e["type"] == "analysis")
+    assert analysis["router"] == "heuristic"
+    assert analysis["tasks"][0]["agent"] == "medical"
+    assert any("longer than" in n for n in analysis["router_notes"])

@@ -311,6 +311,8 @@ class OllamaClient:
                             yield {"type": "stats", **self._stats(chunk, model, started)}
         except httpx.ConnectError as exc:
             raise OllamaError(self._unreachable_message()) from exc
+        except httpx.HTTPError as exc:
+            raise OllamaError(f"Ollama stream interrupted ({exc.__class__.__name__})") from exc
 
     async def chat_json(
         self,
@@ -327,7 +329,7 @@ class OllamaClient:
             "messages": messages,
             "stream": False,
             "format": schema,
-            "options": self._options({"temperature": 0, "num_predict": 700, **(options or {})}),
+            "options": self._options({"temperature": 0, "num_predict": 600, **(options or {})}),
             "keep_alive": settings.keep_alive,
         }
         if info.can_think:
@@ -337,6 +339,10 @@ class OllamaClient:
                 r = await c.post("/api/chat", json=payload)
         except httpx.ConnectError as exc:
             raise OllamaError(self._unreachable_message()) from exc
+        except httpx.TimeoutException as exc:
+            raise OllamaError(f"the model took longer than {timeout:.0f} s") from exc
+        except httpx.HTTPError as exc:
+            raise OllamaError(f"Ollama request failed ({exc.__class__.__name__})") from exc
         if r.status_code != 200:
             raise OllamaError(self._error_text(r.text, model))
         content = (r.json().get("message") or {}).get("content") or ""
@@ -362,6 +368,8 @@ class OllamaClient:
                 r = await c.post("/api/chat", json=payload)
         except httpx.ConnectError as exc:
             raise OllamaError(self._unreachable_message()) from exc
+        except httpx.HTTPError as exc:
+            raise OllamaError(f"Vision request failed ({exc.__class__.__name__})") from exc
         if r.status_code != 200:
             raise OllamaError(self._error_text(r.text, model))
         return ((r.json().get("message") or {}).get("content") or "").strip()
@@ -373,6 +381,8 @@ class OllamaClient:
                 r = await c.post("/api/embed", json={"model": model, "input": inputs, "keep_alive": settings.keep_alive})
         except httpx.ConnectError as exc:
             raise OllamaError(self._unreachable_message()) from exc
+        except httpx.HTTPError as exc:
+            raise OllamaError(f"Embedding request failed ({exc.__class__.__name__})") from exc
         if r.status_code != 200:
             raise OllamaError(self._error_text(r.text, model))
         return r.json().get("embeddings") or []

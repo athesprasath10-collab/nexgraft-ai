@@ -19,5 +19,5 @@ PLUGIN = PluginSpec(
     ),
     knowledge_collection="hardware-biomedical",
     tools=["battery_life", "biosignal_sampling", "adc_resolution"],
-    examples=["What sensors and hardware considerations should I evaluate for a wearable that monitors physiological parameters?"],
+    examples=["How should I design the analog front end and sampling for a single-lead ECG wearable?"],
 )

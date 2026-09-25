@@ -51,3 +51,13 @@ def test_keyword_knowledge_base(tmp_path):
     hits = asyncio.run(kb.search("photoplethysmography pulse LEDs", ["demo"], min_bm25=0.1))
     assert hits and hits[0][0].heading == "PPG"
     assert asyncio.run(kb.search("quantum chromodynamics", ["demo"])) == []
+
+
+def test_ollama_host_normalisation():
+    from nexgraft.config import _ollama_url
+
+    assert _ollama_url("") == "http://127.0.0.1:11434"
+    assert _ollama_url("0.0.0.0") == "http://127.0.0.1:11434"
+    assert _ollama_url("0.0.0.0:11500") == "http://127.0.0.1:11500"
+    assert _ollama_url("http://192.168.1.5:11434/") == "http://192.168.1.5:11434"
+    assert _ollama_url("localhost") == "http://localhost:11434"

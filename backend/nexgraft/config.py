@@ -38,6 +38,17 @@ def _env(name: str, default: str = "") -> str:
     return os.environ.get(name, default).strip()
 
 
+def _ollama_url(raw: str) -> str:
+    """Accepts OLLAMA_HOST values like '0.0.0.0', '127.0.0.1:11434' or 'http://host:port'."""
+    raw = (raw or "127.0.0.1:11434").strip().rstrip("/")
+    scheme, _, rest = raw.rpartition("://")
+    scheme = scheme or "http"
+    host, _, port = rest.partition(":")
+    if host in ("", "0.0.0.0", "::", "[::]"):
+        host = "127.0.0.1"  # a bind-all address is not a valid client target
+    return f"{scheme}://{host}:{port or '11434'}"
+
+
 def _env_bool(name: str, default: bool) -> bool:
     value = os.environ.get(name)
     if value is None or value.strip() == "":
@@ -61,7 +72,7 @@ def _env_float(name: str, default: float) -> float:
 
 @dataclass
 class Settings:
-    ollama_url: str = field(default_factory=lambda: _env("OLLAMA_HOST", "http://127.0.0.1:11434"))
+    ollama_url: str = field(default_factory=lambda: _ollama_url(_env("OLLAMA_HOST")))
     # Empty = auto-select the first installed Qwen chat model.
     model: str = field(default_factory=lambda: _env("NEXGRAFT_MODEL"))
     embed_model: str = field(default_factory=lambda: _env("NEXGRAFT_EMBED_MODEL", "nomic-embed-text"))
@@ -75,6 +86,8 @@ class Settings:
 
     # "hybrid" = LLM analyzer with keyword fallback, "heuristic" = keyword router only.
     router_mode: str = field(default_factory=lambda: _env("NEXGRAFT_ROUTER", "hybrid"))
+    # Seconds before the LLM analyzer gives up and the keyword router takes over.
+    analyzer_timeout: float = field(default_factory=lambda: _env_float("NEXGRAFT_ANALYZER_TIMEOUT", 60))
     synthesis: bool = field(default_factory=lambda: _env_bool("NEXGRAFT_SYNTHESIS", True))
 
     host: str = field(default_factory=lambda: _env("NEXGRAFT_HOST", "127.0.0.1"))

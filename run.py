@@ -28,7 +28,7 @@ def main() -> None:
         sys.exit("Missing dependencies. Run: pip install -r backend/requirements.txt")
 
     url = f"http://{'localhost' if args.host in ('127.0.0.1', '0.0.0.0') else args.host}:{args.port}"
-    print("\n  NEXGRAFT AI — One Platform. Multiple Experts. One Intelligent Solution.")
+    print("\n  NEXGRAFT AI - One Platform. Multiple Experts. One Intelligent Solution.")
     print(f"  Local workspace: {url}")
     if not FRONTEND_DIST.is_dir():
         print("  ! Frontend not built yet: cd frontend && npm install && npm run build")

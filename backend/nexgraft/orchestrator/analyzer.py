@@ -8,6 +8,7 @@ import time
 from typing import Any
 
 from ..agents.registry import Registry
+from ..config import settings
 from ..llm.ollama import OllamaClient, OllamaError
 from ..tools.literature import keywords_from_text
 from .heuristics import detect_plugin, domain_label, heuristic_analysis
@@ -174,7 +175,9 @@ async def analyze(
     router, notes, plan = "heuristic", [], None
     if mode != "heuristic" and model:
         try:
-            raw = await client.chat_json(model, analyzer_messages(message, registry, context_note), analyzer_schema(registry), timeout=90)
+            raw = await client.chat_json(
+                model, analyzer_messages(message, registry, context_note), analyzer_schema(registry), timeout=settings.analyzer_timeout
+            )
             plan = normalise_llm_plan(raw, message, registry)
             if plan is None:
                 notes.append("The model's plan named no valid workspace; used the keyword router instead.")

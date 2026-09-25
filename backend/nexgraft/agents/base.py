@@ -91,6 +91,8 @@ class AgentSpec:
             "tools": self.tools,
             "uses_plugins": self.uses_plugins,
             "boundary": self.boundary,
+            "subtask_title": self.subtask_title,
+            "subtask_instruction": self.subtask_instruction,
         }
 
 
