@@ -1,0 +1,18 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime data (uploads, vector index)
+data/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Local config
+.env
+.DS_Store
+Thumbs.db
