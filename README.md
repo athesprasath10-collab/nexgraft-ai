@@ -10,6 +10,8 @@ This repository is the **local prototype**. It runs entirely on a normal laptop 
 
 ![NEXGRAFT home](docs/images/home.jpg)
 
+**Design:** an interactive WebGL 3D hero (hover and click the workspace satellites), a command palette (Ctrl/⌘ + K), animated workspace motifs, and a matching [Figma design system](https://www.figma.com/design/lmdUNL99MpkJhzGsA1jBNl) with tokens, components and screens. See [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md).
+
 ## The four workspaces
 
 | Workspace | What it does | You stay in control of |
@@ -153,9 +155,9 @@ cd frontend && npm run typecheck
 ## Troubleshooting
 
 - **"Ollama offline"**: open the Ollama app (tray icon) or run `ollama serve`. If `OLLAMA_HOST` is set to `0.0.0.0`, NEXGRAFT still connects through `127.0.0.1`.
-- **Slow answers**: check the System page. If the model is below 100% on the GPU, pick a smaller model or lower the context size in Settings. Close other GPU-heavy apps.
+- **Slow answers**: check the System page. If the model is below 100% on the GPU, pick a smaller model or lower the context size in Settings. Close other GPU-heavy apps. Setting *Settings → 3D hero* to *Lite* or *Off* frees the GPU completely.
 - **Routing feels wrong**: edit the plan before proceeding, or set the router to keyword-only. Larger models route better.
 - **Indian-language quality**: small models are weaker in Tamil/Telugu/etc. Larger Qwen models improve it noticeably.
 - **Image upload says "no vision model"**: `ollama pull qwen2.5vl:3b` (or `moondream`), then retry.
 
-See also: [docs/SPLINE.md](docs/SPLINE.md) (3D hero) · [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (incubation demo walkthrough).
+See also: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) (tokens, Figma file, UI pieces) · [docs/SPLINE.md](docs/SPLINE.md) (custom 3D scene) · [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) (incubation demo walkthrough).

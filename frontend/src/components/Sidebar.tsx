@@ -1,4 +1,4 @@
-import { Database, Moon, PanelLeftClose, Plus, Server, Settings, Sun, Trash2, Workflow } from "lucide-react";
+import { Database, Moon, PanelLeftClose, Plus, Search, Server, Settings, Sun, Trash2, Workflow } from "lucide-react";
 import { useMemo } from "react";
 import { hrefFor, navigate, type Route } from "../lib/route";
 import { useStore } from "../lib/store";
@@ -50,7 +50,8 @@ export function Sidebar({ route }: { route: Route }) {
   const config = useStore((s) => s.config);
   const conversations = useStore((s) => s.conversations);
   const activeByMode = useStore((s) => s.activeByMode);
-  const { newConversation, setActive, deleteConversation, setSettingsOpen, sidebarOpen, setSidebarOpen, settings, updateSettings } = useStore();
+  const { newConversation, setActive, deleteConversation, setSettingsOpen, sidebarOpen, setSidebarOpen, setPaletteOpen, settings, updateSettings } = useStore();
+  const mac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 
   const mode = route.name === "workspace" ? route.agent : "orchestrator";
   const recent = useMemo(
@@ -89,7 +90,16 @@ export function Sidebar({ route }: { route: Route }) {
           }}
         >
           <Plus size={16} /> New {mode === "orchestrator" ? "task" : "chat"}
-          <span className="kbd">⌘K</span>
+        </button>
+        <button
+          className="search-btn"
+          onClick={() => {
+            setSidebarOpen(false);
+            setPaletteOpen(true);
+          }}
+        >
+          <Search size={15} /> Search & commands
+          <span className="kbd">{mac ? "⌘K" : "Ctrl K"}</span>
         </button>
 
         <nav className="nav">

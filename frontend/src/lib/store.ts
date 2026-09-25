@@ -14,7 +14,7 @@ export const DEFAULT_SETTINGS: Settings = {
   numCtx: null,
   numPredict: null,
   temperature: null,
-  scene3d: true,
+  hero: "webgl",
   theme: "dark",
 };
 
@@ -29,12 +29,14 @@ interface State {
   activeByMode: Record<string, string | undefined>;
   settingsOpen: boolean;
   sidebarOpen: boolean;
+  paletteOpen: boolean;
 
   setConfig: (c: AppConfig | null, error?: string | null) => void;
   setStatus: (s: SystemStatus | null) => void;
   updateSettings: (p: Partial<Settings>) => void;
   setSettingsOpen: (open: boolean) => void;
   setSidebarOpen: (open: boolean) => void;
+  setPaletteOpen: (open: boolean) => void;
   newConversation: (mode: string, plugin?: string | null) => string;
   ensureConversation: (mode: string) => string;
   setActive: (mode: string, id: string | undefined) => void;
@@ -55,12 +57,14 @@ export const useStore = create<State>()(
       activeByMode: {},
       settingsOpen: false,
       sidebarOpen: false,
+      paletteOpen: false,
 
       setConfig: (config, error = null) => set({ config, configError: error }),
       setStatus: (status) => set({ status }),
       updateSettings: (p) => set((s) => ({ settings: { ...s.settings, ...p } })),
       setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
       setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+      setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
 
       newConversation: (mode, plugin = null) => {
         const id = uid();
@@ -132,7 +136,12 @@ export const useStore = create<State>()(
             },
           ]),
         );
-        return { ...current, ...p, settings: { ...DEFAULT_SETTINGS, ...(p.settings || {}) }, conversations };
+        // v0.1 stored a boolean `scene3d`; map it onto the hero mode.
+        const legacy = p.settings as (Partial<State["settings"]> & { scene3d?: boolean }) | undefined;
+        const settings = { ...DEFAULT_SETTINGS, ...(legacy || {}) };
+        if (legacy?.scene3d === false && !legacy.hero) settings.hero = "off";
+        delete (settings as { scene3d?: boolean }).scene3d;
+        return { ...current, ...p, settings, conversations };
       },
     },
   ),

@@ -6,6 +6,7 @@ import { DynamicIcon, IconTile } from "../components/Icon";
 import { CodeBlock } from "../components/Markdown";
 import { SourceItem } from "../components/SourceList";
 import { ToolForm, ToolPanel } from "../components/ToolPanel";
+import { WorkspaceMotif } from "../components/WorkspaceMotif";
 import { isActive, sendDirect, stopTurn } from "../lib/engine";
 import { agentById, useStore } from "../lib/store";
 import type { AgentSpec, Conversation, Source } from "../lib/types";
@@ -105,12 +106,15 @@ function SourcesPanel({ conv }: { conv?: Conversation }) {
 function EmptyWorkspace({ spec, examples, onPick }: { spec: AgentSpec; examples: string[]; onPick: (t: string) => void }) {
   return (
     <div className="ws-empty fade-up">
-      <IconTile name={spec.icon} color={spec.color} size={56} iconSize={26} />
+      <div className="ws-empty-art">
+        <WorkspaceMotif kind={spec.workspace} color={spec.color} className="big" />
+        <IconTile name={spec.icon} color={spec.color} size={56} iconSize={26} />
+      </div>
       <h2>{spec.name}</h2>
       <p className="muted">{spec.description}</p>
       <div className="ws-examples">
         {examples.map((e) => (
-          <button key={e} className="example-card" style={{ "--c": spec.color } as React.CSSProperties} onClick={() => onPick(e)}>
+          <button key={e} className="example-card spot" style={{ "--c": spec.color } as React.CSSProperties} onClick={() => onPick(e)}>
             <span className="example-text">{e}</span>
           </button>
         ))}
@@ -169,6 +173,7 @@ export function WorkspaceView({ agentId }: { agentId: string }) {
   return (
     <div className="view workspace" style={{ "--c": spec.color } as React.CSSProperties}>
       <header className="ws-header">
+        <WorkspaceMotif kind={spec.workspace} color={spec.color} className="header" />
         <button className="icon-btn mobile-only" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
           <Menu size={20} />
         </button>

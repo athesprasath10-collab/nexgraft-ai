@@ -103,6 +103,7 @@ export interface AppConfig {
     image_types: string[];
   };
   spline_scene: string | null;
+  hero_model: string | null;
 }
 
 export interface ModelInfo {
@@ -303,7 +304,7 @@ export interface Settings {
   numCtx: number | null;
   numPredict: number | null;
   temperature: number | null;
-  scene3d: boolean;
+  hero: "webgl" | "lite" | "off";
   theme: "dark" | "light";
 }
 

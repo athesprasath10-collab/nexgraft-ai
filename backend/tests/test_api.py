@@ -15,6 +15,7 @@ def test_config_lists_workspaces_plugins_tools():
     assert [a["id"] for a in cfg["agents"]] == ["general", "bioinformatics", "medical", "hardware"]
     assert {p["id"] for p in cfg["plugins"]} >= {"biomedical", "electronics", "mechanical", "civil", "electrical"}
     assert any(t["id"] == "sequence_stats" for t in cfg["tools"])
+    assert "hero_model" in cfg and "spline_scene" in cfg
 
 
 def test_analyze_llm_path(fake_ollama):

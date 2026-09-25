@@ -3,8 +3,9 @@ import { useStore } from "../lib/store";
 import { cx } from "../lib/utils";
 import { DynamicIcon } from "./Icon";
 
-// The Spline runtime (~2 MB) is only downloaded when a scene is configured.
+// The Spline runtime (~2 MB) and three.js are only downloaded when needed.
 const Spline = lazy(() => import("@splinetool/react-spline"));
+const Hero3D = lazy(() => import("./three/Hero3D"));
 
 class SceneBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -103,28 +104,48 @@ export function OrbitCore({ still = false, compact = false }: { still?: boolean;
 
 export function HeroScene() {
   const scene = useStore((s) => s.config?.spline_scene);
-  const enabled = useStore((s) => s.settings.scene3d);
+  const mode = useStore((s) => s.settings.hero);
   const [loaded, setLoaded] = useState(false);
   const [timedOut, setTimedOut] = useState(false);
+  const [webglFailed, setWebglFailed] = useState(false);
 
   useEffect(() => {
-    if (!scene || !enabled) return;
+    if (!scene || mode === "off") return;
     const t = setTimeout(() => setTimedOut(true), 15000);
     return () => clearTimeout(t);
-  }, [scene, enabled]);
+  }, [scene, mode]);
 
-  if (!enabled) return <OrbitCore still />;
-  if (!scene || (timedOut && !loaded)) return <OrbitCore />;
+  if (mode === "off") return <OrbitCore still />;
 
-  const fallback = <OrbitCore />;
-  return (
-    <div className="spline-wrap">
-      {!loaded && <div className="spline-fallback">{fallback}</div>}
-      <SceneBoundary fallback={fallback}>
-        <Suspense fallback={null}>
-          <Spline scene={scene} onLoad={() => setLoaded(true)} className={cx("spline-canvas", loaded && "ready")} />
-        </Suspense>
-      </SceneBoundary>
-    </div>
-  );
+  // 1. A configured Spline scene wins.
+  if (scene && !(timedOut && !loaded)) {
+    const fallback = <OrbitCore />;
+    return (
+      <div className="spline-wrap">
+        {!loaded && <div className="spline-fallback">{fallback}</div>}
+        <SceneBoundary fallback={fallback}>
+          <Suspense fallback={null}>
+            <Spline scene={scene} onLoad={() => setLoaded(true)} className={cx("spline-canvas", loaded && "ready")} />
+          </Suspense>
+        </SceneBoundary>
+      </div>
+    );
+  }
+
+  // 2. Built-in interactive WebGL scene (three.js), with the CSS orbit while it loads.
+  if (mode === "webgl" && !webglFailed) {
+    const fallback = <OrbitCore />;
+    return (
+      <div className="spline-wrap">
+        <SceneBoundary fallback={fallback}>
+          <Suspense fallback={fallback}>
+            <Hero3D onFail={() => setWebglFailed(true)} />
+          </Suspense>
+        </SceneBoundary>
+      </div>
+    );
+  }
+
+  // 3. Lightweight CSS/JS orbit.
+  return <OrbitCore />;
 }

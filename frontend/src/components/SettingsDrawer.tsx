@@ -117,7 +117,14 @@ export function SettingsDrawer() {
 
           <section>
             <h4>Interface</h4>
-            <Toggle label="3D hero scene" hint="Spline scene or built-in orbit — turn off to save GPU" checked={settings.scene3d} onChange={(v) => set("scene3d", v)} />
+            <label className="field">
+              <span>3D hero</span>
+              <select value={settings.hero} onChange={(e) => set("hero", e.target.value as Settings["hero"])}>
+                <option value="webgl">Interactive 3D (WebGL, low-power GPU)</option>
+                <option value="lite">Lite orbit (CSS, lowest GPU use)</option>
+                <option value="off">Off (static)</option>
+              </select>
+            </label>
             <label className="field">
               <span>Theme</span>
               <select value={settings.theme} onChange={(e) => set("theme", e.target.value as Settings["theme"])}>

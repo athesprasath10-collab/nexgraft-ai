@@ -11,6 +11,7 @@ import "./styles/components.css";
 import "./styles/chat.css";
 import "./styles/markdown.css";
 import "./styles/hero.css";
+import "./styles/enhance.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

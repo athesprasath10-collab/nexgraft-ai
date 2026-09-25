@@ -1,6 +1,11 @@
 # 3D hero with Spline
 
-The home page has a 3D "hero" above *What are you working on?*. Out of the box it shows a built-in, offline animation: the four workspaces orbiting the NEXGRAFT core. You can replace it with your own [Spline](https://spline.design) scene without touching any code.
+The home page has a 3D "hero" above *What are you working on?*. Out of the box it shows an **interactive three.js scene**: the NEXGRAFT core with the four workspaces orbiting it. Hover a satellite to see its name, and click it to open that workspace. The alternatives are a lightweight CSS orbit and a static version, both selectable in *Settings → 3D hero*.
+
+You have two ways to customise it without touching code:
+
+- **Your own GLB model as the core:** put `hero.glb` in `frontend/public/models/` (or set `NEXGRAFT_HERO_MODEL`). Spline can export GLB (*Export → 3D formats → GLB*).
+- **A full Spline scene** replacing the whole hero, as described below.
 
 ## 1. Design the scene in Spline
 

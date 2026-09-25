@@ -1,5 +1,6 @@
 import { LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
+import { CommandPalette } from "./components/CommandPalette";
 import { SettingsDrawer } from "./components/SettingsDrawer";
 import { Logo, Sidebar } from "./components/Sidebar";
 import { Toasts } from "./components/Toast";
@@ -82,14 +83,26 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        const mode = route.name === "workspace" ? route.agent : "orchestrator";
-        useStore.getState().newConversation(mode);
-        if (route.name !== "workspace" && route.name !== "home") window.location.hash = "#/";
+        const st = useStore.getState();
+        st.setPaletteOpen(!st.paletteOpen);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [route]);
+  }, []);
+
+  // Cursor spotlight on cards (.spot) — one delegated listener, CSS does the rest.
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      const el = (e.target as Element | null)?.closest?.(".spot") as HTMLElement | null;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => document.removeEventListener("pointermove", onMove);
+  }, []);
 
   if (!config) {
     return (
@@ -120,6 +133,7 @@ export default function App() {
         </main>
       </div>
       <SettingsDrawer />
+      <CommandPalette route={route} />
       <Toasts />
     </>
   );

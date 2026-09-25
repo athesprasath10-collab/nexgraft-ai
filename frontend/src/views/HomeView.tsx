@@ -84,14 +84,14 @@ export function HomeView() {
             </div>
             <div className="example-grid">
               {config?.agents.map((a) => (
-                <button key={a.id} className="example-card" style={{ "--c": a.color } as React.CSSProperties} onClick={() => pickExample(a.examples[0])}>
+                <button key={a.id} className="example-card spot" style={{ "--c": a.color } as React.CSSProperties} onClick={() => pickExample(a.examples[0])}>
                   <span className="example-kicker">
                     <DynamicIcon name={a.icon} size={13} /> {a.short_name}
                   </span>
                   <span className="example-text">{a.examples[0]}</span>
                 </button>
               ))}
-              <button className="example-card multi" onClick={() => pickExample(MULTI_EXAMPLE)}>
+              <button className="example-card multi spot" onClick={() => pickExample(MULTI_EXAMPLE)}>
                 <span className="example-kicker">
                   <Network size={13} /> Multi-agent · task graph
                 </span>
@@ -107,7 +107,7 @@ export function HomeView() {
             </div>
             <div className="ws-grid">
               {config?.agents.map((a) => (
-                <a key={a.id} className="ws-card" href={hrefFor({ name: "workspace", agent: a.id })} style={{ "--c": a.color } as React.CSSProperties}>
+                <a key={a.id} className="ws-card spot" href={hrefFor({ name: "workspace", agent: a.id })} style={{ "--c": a.color } as React.CSSProperties}>
                   <div className="ws-card-top">
                     <IconTile name={a.icon} color={a.color} size={40} iconSize={20} />
                     <ArrowRight size={16} className="ws-card-arrow" />

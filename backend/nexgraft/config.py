@@ -102,6 +102,8 @@ class Settings:
     code_timeout: int = field(default_factory=lambda: _env_int("NEXGRAFT_CODE_TIMEOUT", 60))
 
     spline_scene_url: str = field(default_factory=lambda: _env("NEXGRAFT_SPLINE_SCENE"))
+    # Optional GLB model used as the 3D hero core (URL or path served by the app).
+    hero_model_url: str = field(default_factory=lambda: _env("NEXGRAFT_HERO_MODEL"))
 
     knowledge_dir: Path = field(default_factory=lambda: Path(_env("NEXGRAFT_KNOWLEDGE_DIR", str(ROOT_DIR / "knowledge"))))
     data_dir: Path = field(default_factory=lambda: Path(_env("NEXGRAFT_DATA_DIR", str(ROOT_DIR / "data"))))

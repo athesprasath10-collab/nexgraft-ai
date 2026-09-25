@@ -178,6 +178,15 @@ def _spline_scene() -> str | None:
     return None
 
 
+def _hero_model() -> str | None:
+    if settings.hero_model_url:
+        return settings.hero_model_url
+    for folder in (FRONTEND_DIST, ROOT_DIR / "frontend" / "public"):
+        if (folder / "models" / "hero.glb").is_file():
+            return "/models/hero.glb"
+    return None
+
+
 @app.get("/api/config")
 async def config() -> dict[str, Any]:
     return {
@@ -203,6 +212,7 @@ async def config() -> dict[str, Any]:
             "image_types": sorted(IMAGE_EXTENSIONS),
         },
         "spline_scene": _spline_scene(),
+        "hero_model": _hero_model(),
     }
 
 
