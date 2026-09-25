@@ -21,6 +21,8 @@ This repository is the **local prototype**. It runs entirely on a normal laptop 
 | **Medical & Healthcare Research AI** | Research-grade literature exploration via Europe PMC (PubMed/MEDLINE), with numbered citations and evidence synthesis. **Not** diagnosis or telemedicine | Clinical interpretation and any healthcare decisions |
 | **Hardware Design AI** | Engineering guidance through **domain plugins**: Biomedical, Electronics, Mechanical, Civil and Electrical, plus 11 engineering calculators | Design, simulation, fabrication, testing and validation |
 
+![Bioinformatics workspace](docs/images/workspace.jpg)
+
 The **Orchestrator** (home page) routes each request automatically, so "Explain Newton's laws" activates only General AI, while *"Design a wearable biomedical device and explain the medical research supporting the selected measurements"* becomes a two-task graph (Medical Research + Hardware Design / Biomedical) with a unified synthesis.
 
 ![Orchestrator plan](docs/images/plan.jpg)
