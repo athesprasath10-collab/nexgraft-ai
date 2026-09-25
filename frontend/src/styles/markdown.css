@@ -1,0 +1,271 @@
+.md {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.md > *:first-child {
+  margin-top: 0;
+}
+.md > *:last-child {
+  margin-bottom: 0;
+}
+.md p,
+.md ul,
+.md ol,
+.md blockquote,
+.md .table-wrap {
+  margin: 0.65em 0;
+}
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  margin: 1.2em 0 0.45em;
+  font-family: var(--font-display);
+}
+.md h1 {
+  font-size: 1.4em;
+}
+.md h2 {
+  font-size: 1.2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+.md h3 {
+  font-size: 1.06em;
+}
+.md h4 {
+  font-size: 1em;
+  color: var(--text-2);
+}
+.md ul,
+.md ol {
+  padding-left: 1.4em;
+}
+.md li {
+  margin: 0.2em 0;
+}
+.md li::marker {
+  color: var(--c, var(--text-3));
+}
+.md strong {
+  font-weight: 650;
+  color: var(--text);
+}
+.md a {
+  color: var(--medical);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--medical) 40%, transparent);
+}
+.md blockquote {
+  padding: 0.3em 1em;
+  border-left: 3px solid var(--c, var(--general));
+  color: var(--text-2);
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+}
+.md hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.2em 0;
+}
+.md :not(pre) > code {
+  font-size: 0.86em;
+  padding: 0.12em 0.4em;
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.md .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.md table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+.md th,
+.md td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.md th {
+  background: var(--surface-2);
+  font-weight: 650;
+  white-space: nowrap;
+}
+.md tr:last-child td {
+  border-bottom: 0;
+}
+.md.streaming > *:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  border-radius: 2px;
+  background: var(--c, var(--general));
+  animation: pulse 0.9s infinite;
+}
+.md.streaming > .code-block:last-child::after,
+.md.streaming > .table-wrap:last-child::after,
+.md.streaming > ul:last-child::after,
+.md.streaming > ol:last-child::after {
+  display: none;
+}
+
+.cite {
+  display: inline-grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  margin: 0 1px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: 0.15em;
+  text-decoration: none !important;
+  color: var(--c, var(--medical)) !important;
+  background: color-mix(in srgb, var(--c, var(--medical)) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c, var(--medical)) 35%, transparent);
+  transition: background 0.15s;
+}
+.cite:hover {
+  background: color-mix(in srgb, var(--c, var(--medical)) 30%, transparent);
+}
+
+/* ------------------------------------------------------------- code block */
+.code-block {
+  margin: 0.9em 0;
+  border-radius: 13px;
+  overflow: hidden;
+  background: var(--code-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #d7dcec;
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 8px 6px 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.code-lang {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: #8b91a8;
+}
+.code-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.code-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #aab0c4;
+  transition: background 0.15s, color 0.15s;
+}
+.code-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.code-btn.run {
+  color: #0a0b10;
+  background: #2dd4a0;
+  padding: 0 10px;
+}
+.code-btn.run:hover:not(:disabled) {
+  background: #4ae3b4;
+  color: #0a0b10;
+}
+.code-block pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.8px;
+  line-height: 1.6;
+  tab-size: 4;
+}
+.code-block pre code {
+  font-family: inherit;
+  white-space: pre;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  border-radius: 0;
+}
+
+/* highlight.js — NEXGRAFT night theme */
+.hljs-comment,
+.hljs-quote {
+  color: #6a7390;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-meta .hljs-keyword {
+  color: #b9a8ff;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-meta .hljs-string {
+  color: #7ee2b8;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet {
+  color: #ffc27a;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #7cc8ff;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-params {
+  color: #e6c3ff;
+}
+.hljs-type,
+.hljs-title.class_ {
+  color: #ffd98a;
+}
+.hljs-meta {
+  color: #8b91a8;
+}
+.hljs-deletion {
+  color: #ff8095;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
