@@ -2,6 +2,7 @@ import { ChevronRight, ExternalLink, Info, TriangleAlert, Wrench } from "lucide-
 import { useState } from "react";
 import type { ToolCall, ToolOutput } from "../lib/types";
 import { cx } from "../lib/utils";
+import { SchematicView } from "./Schematic";
 
 const EXTRA_BLOCKS: [keyof ToolOutput, string][] = [
   ["protein", "Protein"],
@@ -14,6 +15,7 @@ export function ToolOutputView({ output }: { output: ToolOutput }) {
   return (
     <div className="tool-output">
       {output.summary && <p className="tool-summary">{output.summary}</p>}
+      {output.schematic && <SchematicView schematic={output.schematic} parts={output.parts} />}
       {output.results?.length > 0 && (
         <dl className="result-grid">
           {output.results.map((r, i) => (
@@ -71,8 +73,8 @@ export function ToolOutputView({ output }: { output: ToolOutput }) {
 }
 
 export function ToolCallCard({ call }: { call: ToolCall }) {
-  const [open, setOpen] = useState(false);
-  const hasDetail = (call.output?.results?.length || 0) > 0;
+  const [open, setOpen] = useState(!!call.output?.schematic);
+  const hasDetail = (call.output?.results?.length || 0) > 0 || !!call.output?.schematic;
   return (
     <div className={cx("tool-call", open && "open")}>
       <button className="tool-call-head" onClick={() => hasDetail && setOpen(!open)}>

@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from .base import AgentSpec, Preparation, TaskContext
 from .grounding import add_knowledge
+from .schematic import add_schematic
 
 
 async def prepare(ctx: TaskContext) -> Preparation:
     from .registry import registry  # local import: registry imports this module
 
     prep = Preparation()
+    await add_schematic(ctx, prep)
     all_collections = [p.knowledge_collection for p in registry.plugins_for("hardware")]
     plugin = registry.plugins.get(ctx.plugin_id or "")
     if plugin:
@@ -41,7 +43,7 @@ AGENT = AgentSpec(
         "calculator results are provided, use those exact values. You give guidance; the user controls the actual design, "
         "simulation, fabrication and validation. Never claim a design is validated, certified or safe to deploy."
     ),
-    capabilities=["Component & sensor selection", "Materials", "Engineering calculations", "Design considerations", "Standards & references"],
+    capabilities=["Component & sensor selection", "Circuit schematics", "Materials", "Engineering calculations", "Design considerations", "Standards & references"],
     keywords={
         "hardware": 3.0, "sensor": 2.5, "sensors": 2.5, "circuit": 3.0, "circuits": 3.0, "pcb": 3.5, "microcontroller": 3.0,
         "arduino": 3.0, "esp32": 3.0, "raspberry pi": 3.0, "stm32": 3.0, "component": 1.5, "components": 1.5,
@@ -59,6 +61,7 @@ AGENT = AgentSpec(
     examples=[
         "What sensors and hardware considerations should I evaluate for a wearable biomedical device?",
         "Design considerations for a 5 V to 3.3 V power supply for an ESP32 sensor node.",
+        "Draw a circuit to switch a 12 V relay from an ESP32 pin.",
         "Select a beam section for a 3 m aluminium frame carrying 500 N at mid-span.",
     ],
     prepare=prepare,

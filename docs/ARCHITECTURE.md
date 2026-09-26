@@ -56,9 +56,19 @@ Nodes emit progress through LangGraph's custom stream writer. The server forward
   - General: retrieves from the `general` collection.
   - Bioinformatics: finds sequences in the message or attached FASTA files, runs `sequence_stats`, and injects the results as verified values. Retrieves from `bioinformatics`.
   - Medical: Europe PMC search (abstracts become numbered sources) plus the `medical` collection.
-  - Hardware: retrieves from the active plugin's collection first, then from the other engineering collections.
+  - Hardware: draws a circuit schematic when the request is about one (below), then retrieves from the active plugin's collection first and the other engineering collections after it.
 - `plugins/hardware/*.py`: `PLUGIN = PluginSpec(...)` with keywords (plugin detection), a prompt add-on, a knowledge collection and calculators.
-- `tools/*.py`: `ToolSpec` with a typed parameter list; `coerce()` validates input, and results use a standard `{summary, results[], warnings, notes}` shape.
+- `tools/*.py`: `ToolSpec` with a typed parameter list; `coerce()` validates input (number fields accept `10k`, `4k7`, `100 nF`, `20 mA`), and results use a standard `{summary, results[], warnings, notes}` shape. Calculators with `schematic=True` also return `schematic {svg, title, caption}` and `parts [{ref, value, description}]`.
+
+### Circuit schematics
+
+`agents/schematic.py` runs in the Hardware `prepare` hook. A regex gate skips requests without circuit words, and requests for circuits no calculator draws (buck, boost, 555, H-bridge…) skip the step entirely. Otherwise one JSON-schema call to the default model returns `{circuit, values}`. The schema has one `anyOf` branch per circuit, so the model only sees that circuit's parameters, and choice parameters are enums. Then:
+
+1. A keyword guard drops a pick that does not match the request (e.g. a regulator for "control a lamp").
+2. Each value is parsed with its unit. A number the request does not state is kept only when it is a required voltage (common facts such as 3.3 V logic or a 2 V red LED) or a feature the request names (e.g. "debounce"); otherwise the calculator default applies. Kept model choices and defaults are listed in the result's first note.
+3. The calculator computes E-series values and `tools/circuits.py` draws the fixed layout for that circuit with schemdraw's SVG backend, so wiring never depends on the model.
+
+The result streams as a normal `tool` event (the UI shows the drawing, parts list and SVG/PNG download), and the model is told to explain the schematic by designator using the computed values. `options.diagrams = false` turns the step off.
 
 ## Knowledge layer
 

@@ -1,4 +1,4 @@
-import { Calculator, ChevronRight, CornerDownLeft, FlaskConical, Globe, LoaderCircle, Play } from "lucide-react";
+import { Calculator, ChevronRight, CircuitBoard, CornerDownLeft, FlaskConical, Globe, LoaderCircle, Play } from "lucide-react";
 import { useState } from "react";
 import { api, ApiError } from "../lib/api";
 import type { ToolOutput, ToolSpec } from "../lib/types";
@@ -38,9 +38,22 @@ export function ToolForm({ tool, onInsert, defaultOpen = false }: { tool: ToolSp
   return (
     <div className={cx("tool-form", open && "open")}>
       <button className="tool-form-head" onClick={() => setOpen(!open)}>
-        <span className="tool-form-icon">{tool.agent === "bioinformatics" ? <FlaskConical size={15} /> : tool.requires_network ? <Globe size={15} /> : <Calculator size={15} />}</span>
+        <span className="tool-form-icon">
+          {tool.agent === "bioinformatics" ? (
+            <FlaskConical size={15} />
+          ) : tool.requires_network ? (
+            <Globe size={15} />
+          ) : tool.schematic ? (
+            <CircuitBoard size={15} />
+          ) : (
+            <Calculator size={15} />
+          )}
+        </span>
         <span className="tool-form-title">
-          <span>{tool.name}</span>
+          <span>
+            {tool.name}
+            {tool.schematic && <span className="tag">schematic</span>}
+          </span>
           <span className="faint small">{tool.description}</span>
         </span>
         <ChevronRight size={15} className="chev" />

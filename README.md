@@ -19,7 +19,7 @@ This repository is the **local prototype**. It runs entirely on a normal laptop 
 | **General AI** | Explanations, reasoning, planning, writing, brainstorming, coding, summaries | How the output is used |
 | **Bioinformatics AI** | A coding and workflow environment: Python/Biopython scripts, NGS and alignment workflows, docking workflow guidance. Includes a sequence toolkit and a **Run locally** button | Running code, external tools (BLAST, aligners, AutoDock Vina…), experiments |
 | **Medical & Healthcare Research AI** | Research-grade literature exploration via Europe PMC (PubMed/MEDLINE), with numbered citations and evidence synthesis. **Not** diagnosis or telemedicine | Clinical interpretation and any healthcare decisions |
-| **Hardware Design AI** | Engineering guidance through **domain plugins**: Biomedical, Electronics, Mechanical, Civil and Electrical, plus 11 engineering calculators | Design, simulation, fabrication, testing and validation |
+| **Hardware Design AI** | Engineering guidance through **domain plugins**: Biomedical, Electronics, Mechanical, Civil and Electrical, plus 17 engineering calculators; 8 of them draw **circuit schematics** | Design, simulation, fabrication, testing and validation |
 
 ![Bioinformatics workspace](docs/images/workspace.jpg)
 
@@ -86,13 +86,14 @@ flowchart LR
     E[run_task ↺ per task<br/>RAG + tools + streaming LLM] --> S[synthesize<br/>unified output]
   end
   E -.-> K[(Knowledge base<br/>BM25 + vector index)]
-  E -.-> T[Tools: sequence toolkit ·<br/>engineering calculators ·<br/>Europe PMC]
+  E -.-> T[Tools: sequence toolkit ·<br/>engineering calculators ·<br/>circuit schematics · Europe PMC]
 ```
 
 - **Analysis:** a single structured-output call to the local model (constrained by a JSON schema) produces the domain, intent, capabilities and task plan. A deterministic keyword router is the fallback if the model is slow or fails, and a guard catches obvious small-model misroutes. Every decision is shown in the UI, including which router made it.
 - **User control:** the plan appears as an editable card. You can toggle, retarget or add workspaces before anything runs, or turn on *Run plans automatically* in Settings.
 - **Execution:** tasks run **sequentially** on purpose. On a 4 GB GPU, Ollama serves one request at a time, so parallel agents would only fight over VRAM. Tokens stream live to the UI.
 - **Grounding:** each workspace retrieves from its knowledge collections and runs relevant tools **before** generating. Tool outputs are computed values (e.g. the exact GC content of a pasted sequence) that the model is told to use verbatim; literature abstracts become numbered citations.
+- **Circuit schematics:** when a Hardware Design request is about a common circuit (LED + resistor, voltage divider, push-button, NPN transistor/relay switch, RC filter, inverting or non-inverting op-amp, LDO regulator), the model only picks the circuit and copies your values. A calculator computes standard E-series parts and draws the schematic with [schemdraw](https://schemdraw.readthedocs.io), so the wiring is always correct; the model then explains it part by part. The schematic appears in the answer with a parts list and SVG/PNG download, and any value you did not give is labelled as a default or a model choice. It costs one short extra model call and can be turned off in Settings.
 
 More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
@@ -108,7 +109,8 @@ Everything below is in the code and demonstrable today:
 - ✅ Knowledge layer: hybrid RAG (BM25 + local NumPy vector index with Ollama embeddings) over extensible domain collections
 - ✅ Bioinformatics tools (sequence stats, translation, ORFs, Biopython alignment) and a user-triggered local code runner that displays plots
 - ✅ Medical literature search (Europe PMC) with citations; research-only boundary
-- ✅ Hardware domain plugins (5) with 11 deterministic calculators
+- ✅ Hardware domain plugins (5) with 17 deterministic calculators
+- ✅ Circuit schematics for 8 common circuits, drawn automatically for circuit requests or from the Calculators panel, with parts list and SVG/PNG download
 - ✅ Input: text, voice (browser speech recognition in Chrome/Edge), documents (PDF, DOCX, TXT/MD, CSV, FASTA…), images (with a local vision model)
 - ✅ English + 10 Indian languages (script detection, language-matched answers, read-aloud)
 
@@ -134,7 +136,7 @@ backend/nexgraft/
   orchestrator/           LangGraph graphs, LLM analyzer, keyword router, prompt/context budgeting
   agents/                 One module per workspace (auto-discovered) + shared grounding
   plugins/hardware/       One module per engineering domain plugin (auto-discovered)
-  tools/                  Sequence toolkit, engineering calculators, Europe PMC client
+  tools/                  Sequence toolkit, engineering calculators, schematic drawings, Europe PMC client
   knowledge/store.py      Hybrid BM25 + vector retrieval, on-disk index
   multimodal/             Document extraction, language detection, vision
   llm/ollama.py           Ollama client (streaming, JSON schema, embeddings, model selection)

@@ -55,7 +55,21 @@ export interface ToolSpec {
   category: string;
   formula: string;
   requires_network: boolean;
+  /** The output includes a circuit schematic. */
+  schematic?: boolean;
   params: ToolParam[];
+}
+
+export interface Schematic {
+  svg: string;
+  title: string;
+  caption?: string;
+}
+
+export interface CircuitPart {
+  ref: string;
+  value: string;
+  description: string;
 }
 
 export interface ToolOutput {
@@ -70,6 +84,8 @@ export interface ToolOutput {
   reverse_complement?: string;
   sources?: Source[];
   records?: ToolOutput[];
+  schematic?: Schematic;
+  parts?: CircuitPart[];
   [key: string]: unknown;
 }
 
@@ -302,6 +318,7 @@ export interface Settings {
   synthesis: boolean;
   literature: boolean;
   useKnowledge: boolean;
+  diagrams: boolean;
   language: string;
   numCtx: number | null;
   numPredict: number | null;

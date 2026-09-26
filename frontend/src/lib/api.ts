@@ -84,6 +84,7 @@ export function requestOptions(s: Settings, voice = false) {
     synthesis: s.synthesis,
     literature: s.literature,
     use_knowledge: s.useKnowledge,
+    diagrams: s.diagrams,
     voice,
   };
   if (s.model) opts.model = s.model;

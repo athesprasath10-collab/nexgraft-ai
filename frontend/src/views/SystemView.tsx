@@ -17,6 +17,7 @@ const IMPLEMENTED: [string, string][] = [
   ["Bioinformatics tools", "Sequence statistics, translation, ORF finder and Biopython alignment; generated scripts run locally only when you press Run."],
   ["Medical literature search", "Europe PMC (PubMed/MEDLINE, PMC) abstracts with numbered citations. Research only — no diagnosis."],
   ["Hardware domain plugins", "Biomedical, Electronics, Mechanical, Civil and Electrical plugins with deterministic engineering calculators."],
+  ["Circuit schematics", "Eight common circuits (LED, divider, button, transistor switch, RC filter, two op-amp amplifiers, LDO) drawn with computed standard values, a parts list and SVG/PNG download; the model explains them."],
   ["Multimodal input", "Text; voice via browser speech recognition (Chrome/Edge); PDF, DOCX, text, CSV and FASTA documents; images through an optional local vision model."],
   ["Multilingual", "English + 10 Indian languages: script detection, language-matched answers and read-aloud. Quality depends on the model size."],
   ["Local & private", "Runs on this computer; conversations are stored in your browser."],

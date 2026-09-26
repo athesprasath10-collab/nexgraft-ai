@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
   synthesis: true,
   literature: true,
   useKnowledge: true,
+  diagrams: true,
   language: "auto",
   numCtx: null,
   numPredict: null,

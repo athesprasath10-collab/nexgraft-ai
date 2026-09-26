@@ -802,6 +802,10 @@ select option {
 .tool-form-title .small {
   font-weight: 400;
 }
+.tool-form-title .tag {
+  margin-left: 6px;
+  vertical-align: 1px;
+}
 .chev {
   transition: transform 0.2s var(--ease);
   color: var(--text-3);
@@ -910,6 +914,48 @@ select option {
 }
 .tool-sources a:hover {
   text-decoration: underline;
+}
+.schematic {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+/* Schematics are drawn in black on paper in both themes, like a printed datasheet. */
+.schematic-paper {
+  display: flex;
+  justify-content: center;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-2);
+  background: #ffffff;
+  overflow-x: auto;
+}
+.schematic-paper img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 380px;
+}
+.schematic figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  font-size: 13px;
+}
+.schematic-title {
+  font-weight: 650;
+}
+.schematic-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.parts-table th,
+.parts-table td {
+  font-size: 12.5px;
+  vertical-align: top;
 }
 .tool-warning,
 .tool-note {

@@ -89,6 +89,7 @@ class Options(BaseModel):
     literature_limit: int | None = Field(default=None, ge=1, le=10)
     synthesis: bool | None = None
     use_knowledge: bool | None = None
+    diagrams: bool | None = None
     temperature: float | None = Field(default=None, ge=0, le=2)
     num_ctx: int | None = Field(default=None, ge=1024, le=131072)
     num_predict: int | None = Field(default=None, ge=64, le=8192)

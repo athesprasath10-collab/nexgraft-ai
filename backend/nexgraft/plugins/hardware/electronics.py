@@ -19,6 +19,9 @@ PLUGIN = PluginSpec(
         "manufacturability. Show circuit calculations with units."
     ),
     knowledge_collection="hardware-electronics",
-    tools=["ohms_law", "voltage_divider", "led_resistor", "rc_filter"],
+    tools=[
+        "ohms_law", "voltage_divider", "led_resistor", "button_pullup", "transistor_switch", "rc_filter",
+        "opamp_inverting", "opamp_noninverting", "linear_regulator",
+    ],
     examples=["Design considerations for a 5 V to 3.3 V power supply for an ESP32 sensor node."],
 )

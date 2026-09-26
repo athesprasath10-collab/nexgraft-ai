@@ -97,6 +97,12 @@ export function SettingsDrawer() {
             <h4>Knowledge & tools</h4>
             <Toggle label="Local knowledge base (RAG)" hint="Retrieve from knowledge/ collections" checked={settings.useKnowledge} onChange={(v) => set("useKnowledge", v)} />
             <Toggle label="Literature search (Europe PMC)" hint="Medical Research AI · needs internet" checked={settings.literature} onChange={(v) => set("literature", v)} />
+            <Toggle
+              label="Circuit schematics"
+              hint="Hardware Design draws common circuits with computed values · one quick extra model call"
+              checked={settings.diagrams}
+              onChange={(v) => set("diagrams", v)}
+            />
           </section>
 
           <section>
