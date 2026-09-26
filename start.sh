@@ -11,9 +11,9 @@ fi
 echo "[2/3] Checking Python packages..."
 .venv/bin/python -m pip install --disable-pip-version-check -q -r backend/requirements.txt
 
-if [ ! -f frontend/dist/index.html ]; then
-  command -v npm >/dev/null || { echo "Node.js 20.19+ or 22+ is required once to build the interface: https://nodejs.org"; exit 1; }
-  echo "[3/3] Building the web interface (first run only)..."
+if .venv/bin/python run.py --frontend-stale; then
+  command -v npm >/dev/null || { echo "Node.js 20.19+ or 22+ is required to build the interface: https://nodejs.org"; exit 1; }
+  echo "[3/3] Building the web interface (first run and after updates)..."
   (cd frontend && npm install && npm run build)
 fi
 

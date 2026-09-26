@@ -12,7 +12,19 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "backend"))
 
 
+def frontend_stale() -> bool:
+    """True when the built interface is missing or older than its sources (e.g. after a git pull)."""
+    frontend = ROOT / "frontend"
+    built = frontend / "dist" / "index.html"
+    if not built.is_file():
+        return True
+    sources = [frontend / "index.html", frontend / "package.json", *(frontend / "src").rglob("*"), *(frontend / "public").rglob("*")]
+    return max((p.stat().st_mtime for p in sources if p.is_file()), default=0) > built.stat().st_mtime
+
+
 def main() -> None:
+    if "--frontend-stale" in sys.argv:  # used by start.bat / start.sh: exit 0 means "rebuild"
+        sys.exit(0 if frontend_stale() else 1)
     from nexgraft.config import FRONTEND_DIST, settings
 
     parser = argparse.ArgumentParser(description="Run the NEXGRAFT AI local server")

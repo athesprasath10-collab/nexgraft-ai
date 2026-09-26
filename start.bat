@@ -18,14 +18,15 @@ if not exist ".venv\Scripts\python.exe" (
 echo [2/3] Checking Python packages...
 ".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -q -r backend\requirements.txt || goto :fail
 
-if not exist "frontend\dist\index.html" (
+".venv\Scripts\python.exe" run.py --frontend-stale
+if not errorlevel 1 (
   where npm >nul 2>nul
   if errorlevel 1 (
-    echo Node.js 20.19+ or 22+ is required once, to build the interface: https://nodejs.org
+    echo Node.js 20.19+ or 22+ is required to build the interface: https://nodejs.org
     pause
     exit /b 1
   )
-  echo [3/3] Building the web interface ^(first run only^)...
+  echo [3/3] Building the web interface ^(first run and after updates^)...
   pushd frontend
   call npm install || (popd & goto :fail)
   call npm run build || (popd & goto :fail)

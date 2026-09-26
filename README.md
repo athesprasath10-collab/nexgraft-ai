@@ -41,7 +41,7 @@ Any Qwen model you already downloaded works. NEXGRAFT auto-selects the first ins
 
 **2. Install Python 3.10+ and Node.js 20.19+ (or 22+).** Node is needed once, to build the interface.
 
-**3. Run it.** Double-click **`start.bat`** (or run it from a terminal). The first run creates a virtual environment, installs dependencies and builds the interface; later runs start in seconds. Your browser opens at **http://localhost:8000**.
+**3. Run it.** Double-click **`start.bat`** (or run it from a terminal). The first run creates a virtual environment, installs dependencies and builds the interface; later runs start in seconds. After you update the code (a new ZIP or `git pull`), it installs new packages and rebuilds the interface automatically. Your browser opens at **http://localhost:8000**.
 
 On Linux or macOS, use `./start.sh`. To do it by hand:
 
